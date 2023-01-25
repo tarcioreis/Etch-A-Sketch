@@ -73,7 +73,6 @@ const render = () => {
     for (let i = 0; i < size * size; i++) {
         let div = document.createElement("div");
         div.classList = "item";
-        div.id = i;
         div.onmouseover = changeDivColor;
         board.appendChild(div);
     }
