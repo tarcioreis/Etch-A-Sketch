@@ -2,7 +2,11 @@ let size = 16;
 let color = "black";
 let pens = ["pen", "normal", "bold", "bolder"];
 
+let colors = ["colors", "red", "green", "blue", "yellow", "gold",
+"silver", "blueviolet", "lime", "orange", "black"];
+
 const container = document.querySelector(".container");
+const tools = document.querySelector(".tools");
 
 const board = document.querySelector(".board");
 board.style.display = "grid";
@@ -13,51 +17,56 @@ eraser.innerText = "eraser";
 const clear = document.createElement("button");
 clear.innerText = "clear";
 
-const selectPen = document.createElement("select");
+const createSelectElement = (parent, arrayOptions) => {
+    let select = document.createElement("select");
+    for (let i = 0; i < arrayOptions.length; i++) {
+        let option = document.createElement("option");
+        option.innerText = arrayOptions[i];
+        select.appendChild(option);
+    }
 
-for (const pen of pens) {
-    let option = document.createElement("option");
-    option.innerText = pen;
-    option.id = pen;
-    selectPen.appendChild(option);
+    parent.appendChild(select);
+    return select;
 }
 
-function penOptions (event) {
+const setColor = event => color = event.target.value;
+
+const penOptions = event => {
+
     const value = event.target.value;
     if (value === "normal") {
         color = "black";
         size = 64;
         clearBoard();
-        render();
+        run();
     }
     if (value === "bold") {
         color = "black";
         size = 32;
         clearBoard();
-        render();
+        run();
     }
 
     if (value === "bolder") {
         color = "black";
         size = 16;
         clearBoard();
-        render();
+        run();
     }
 }
 
-function erase () { color = "white"; }
+const erase = () => color = "#fdfdfd";
 
-function clearBoard () {
+const clearBoard = () => {
     board.innerHTML = "";
-    render();
+    run();
 }
 
-function changeColor (event) {
+const changeDivColor = event =>
     event.target.style.backgroundColor = `${color}`;
-}
 
 // create grid and render board
-function render () {
+const render = () => {
     board.style.gridTemplateColumns = `repeat(${size}, 0.5fr)`;
     board.style.gridTemplateRows = `repeat(${size}, 0.5fr)`;
     
@@ -65,20 +74,24 @@ function render () {
         let div = document.createElement("div");
         div.classList = "item";
         div.id = i;
-        //div.innerText = i;
-        div.onmouseover = changeColor;
+        div.onmouseover = changeDivColor;
         board.appendChild(div);
     }
 }
 
-container.appendChild(eraser);
-container.appendChild(selectPen);
-container.appendChild(clear);
+const selectPen = createSelectElement(container, pens);
+const selectColor = createSelectElement(container, colors);
+
+tools.appendChild(eraser);
+tools.appendChild(clear);
+tools.appendChild(selectPen);
+tools.appendChild(selectColor);
 
 function run () {
     render();
     eraser.onclick = erase;
     selectPen.onclick = penOptions;
+    selectColor.onclick = setColor;
     clear.onclick = clearBoard;
 }
 
